@@ -4,18 +4,20 @@ import type {CellState} from '../App.tsx';
 
 interface GridProps{
     squares: CellState[][],
-    fillSquare(x: number, y:number):void
-    unfillSquare(x:number, y:number):void
+    startDrag(x: number, y:number,event: React.MouseEvent):void,
+    continueDrag(x: number, y:number):void,
+    endDrag():void
 }
 
-function Grid({squares, fillSquare, unfillSquare}:GridProps){
+function Grid({squares, startDrag, continueDrag, endDrag}:GridProps){
     function generateSquares(){
         return squares.map((row,y)=>row.map((val,x)=>
-            <Cell value={val} leftClick={()=>fillSquare(x,y)} rightClick={()=>unfillSquare(x,y)} key={`${x}-${y}`}/>));
+            <Cell value={val} mouseDrag={(e:React.MouseEvent)=>startDrag(x,y,e)} 
+            mouseEnter={()=>continueDrag(x,y)} mouseUp={()=>endDrag()} key={`${x}-${y}`}/>));
         
     }
     return(
-        <div className="grid-container">
+        <div className="grid-container" onContextMenu={(e) => e.preventDefault()}>
             {generateSquares()}
         </div>
     );

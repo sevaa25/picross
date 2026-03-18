@@ -3,17 +3,16 @@ import './Cell.css';
 
 interface CellProps{
     value: CellState,
-    leftClick: () => void,
-    rightClick: () => void
+    mouseDrag: (e:React.MouseEvent) => void,
+    mouseEnter: () => void
+    mouseUp: () => void
 };
 
-function Cell({value, leftClick, rightClick}:CellProps){
+function Cell({value, mouseDrag, mouseEnter, mouseUp}:CellProps){
     // const divVal = value === "marked" ? "X" : "";
     return(
-        <div className={value + `Square`} onClick={leftClick} onContextMenu={(e)=>{
-            e.preventDefault();
-            rightClick();
-        }}> </div>
+        <div className={value + `Square`} onMouseDown={mouseDrag}
+            onMouseEnter={mouseEnter} onMouseUp={mouseUp} > </div>
     );
 }
 export default Cell;
