@@ -1,0 +1,27 @@
+.emptySquare, .filledSquare, .markedSquare {
+  width: 55px;
+  height: 55px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  font-size: 20px;
+  cursor: pointer;
+  user-select: none; 
+}
+
+.emptySquare {
+  background-color: white;
+}
+
+.filledSquare {
+  background-color: #37c2cc; 
+}
+
+.markedSquare {
+  background-color: rgb(186, 177, 177);
+  color: black; 
+}
+
+.emptySquare:hover{background-color: orange;}

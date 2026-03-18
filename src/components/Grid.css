@@ -1,0 +1,9 @@
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(10, 55px);
+  gap: 1px;
+  background-color: black; 
+  border: 2px solid black; 
+  width: max-content; 
+  box-shadow: 1px 1px 1px black;
+}
