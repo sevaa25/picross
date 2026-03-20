@@ -7,6 +7,27 @@ const getRandomInt = (min: number, max: number): number => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
+const getChunk = (min: number, max: number): number => {
+  const p = getRandomInt(1, 100); 
+  let size = 1;
+
+  if (p <= 50) {
+    size = 1  
+  } 
+  else if (p <= 80) {
+    size = 2;                    
+  } 
+  else if (p <= 92) {
+    size = 3;                   
+  } 
+  else if (p <= 99) {
+    size = 4;  
+  }
+  else {size = getRandomInt(5,10);}
+
+  return Math.max(min, Math.min(size, max));
+};
+
 
 function App() {
 
@@ -20,12 +41,13 @@ function App() {
   function generateSolution(): CellState[][] {
     const solutionMatrix: CellState[][] = generateEmptyBoard();
     const m = solutionMatrix.length;
-    const MAX_CHUNK = 5;
+
     for (let x = 0; x < m; x++) {
       let availableCells = m;
-      let generatedNumber = getRandomInt(1, Math.min(m,MAX_CHUNK));
+      let generatedNumber = getChunk(1, m);
       availableCells -= generatedNumber; 
-      let startIndex = getRandomInt(0, availableCells);
+      let startIndex = getRandomInt(0, Math.min(availableCells, 2));
+
       while (availableCells >= 0) { 
         for (let y = startIndex; y < startIndex + generatedNumber; y++) {
           if (y < m) solutionMatrix[x][y] = "filled"; 
@@ -33,11 +55,11 @@ function App() {
         startIndex += generatedNumber;
         availableCells= m - startIndex;
         if (availableCells <= 0) break;
-        const gap = getRandomInt(1, availableCells);
+        const gap = getChunk(1, availableCells);
         startIndex += gap;
         availableCells = m - startIndex;
         if (availableCells <= 0) break;
-        generatedNumber = getRandomInt(1, Math.min(availableCells, MAX_CHUNK));
+        generatedNumber = getChunk(1, availableCells);
         availableCells -= generatedNumber;
       }
     }
