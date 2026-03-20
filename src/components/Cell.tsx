@@ -9,7 +9,6 @@ interface CellProps{
 };
 
 function Cell({value, mouseDrag, mouseEnter, mouseUp}:CellProps){
-    // const divVal = value === "marked" ? "X" : "";
     return(
         <div className={value + `Square`} onMouseDown={mouseDrag}
             onMouseEnter={mouseEnter} onMouseUp={mouseUp} > </div>
