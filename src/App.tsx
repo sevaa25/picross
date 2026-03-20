@@ -20,10 +20,10 @@ function App() {
   function generateSolution(): CellState[][] {
     const solutionMatrix: CellState[][] = generateEmptyBoard();
     const m = solutionMatrix.length;
-
+    const MAX_CHUNK = 5;
     for (let x = 0; x < m; x++) {
       let availableCells = m;
-      let generatedNumber = getRandomInt(1, m);
+      let generatedNumber = getRandomInt(1, Math.min(m,MAX_CHUNK));
       availableCells -= generatedNumber; 
       let startIndex = getRandomInt(0, availableCells);
       while (availableCells >= 0) { 
@@ -37,7 +37,7 @@ function App() {
         startIndex += gap;
         availableCells = m - startIndex;
         if (availableCells <= 0) break;
-        generatedNumber = getRandomInt(1, availableCells);
+        generatedNumber = getRandomInt(1, Math.min(availableCells, MAX_CHUNK));
         availableCells -= generatedNumber;
       }
     }
@@ -106,7 +106,7 @@ function App() {
   }
   return (
     <div className='game-container' onContextMenu={(e) => e.preventDefault()}>
-      <Grid squares={matrix} startDrag={handleMouseDrag} continueDrag={handleMouseEnter} endDrag={handleMouseUp}/>
+      <Grid squares={solution} startDrag={handleMouseDrag} continueDrag={handleMouseEnter} endDrag={handleMouseUp}/>
     </div>
   );
 }
