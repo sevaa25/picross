@@ -20,10 +20,16 @@ function App() {
       setActiveValue(null);
     };
 
+    const blockContextMenu = (e: MouseEvent) => {
+      e.preventDefault();
+    };
+
     window.addEventListener("mouseup", handleGlobalMouseUp);
+    window.addEventListener("contextmenu",blockContextMenu);
 
     return () => {
       window.removeEventListener("mouseup", handleGlobalMouseUp);
+      window.removeEventListener("contextmenu",blockContextMenu);
     };
   }, []
   ); 
