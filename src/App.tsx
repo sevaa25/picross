@@ -139,6 +139,14 @@ function App() {
   }, []
   ); 
 
+  // function compareSolutions(){
+  //   for (let i = 0; i < matrix.length; i++){
+  //     for(let j = 0; j < matrix[i].length; j++){
+  //       if (matrix[i][j] !== )
+  //     }
+  //   }
+  // }
+
   const buttonClicked = (event: React.MouseEvent): boolean => {
     return event.button === 2 || event.buttons === 2;
   };
@@ -175,16 +183,26 @@ function App() {
 
  
   return (
-    <div className='game-container' onContextMenu={(e) => e.preventDefault()}>
-      <div className='top-bar'>
-        <div style={{width: '55px'}}/>
-        <Hints hints={colHints} mode='col'/>
+    <>
+    <div className="main-layout">
+      <div className="side-bar">
+        <h2>MyPicross</h2>
+        <div className="progress-bar">
+          <button type="button" className="solve-btn">Solve Puzzle</button>
+        </div>
       </div>
-      <div className='side-bar'>
-        <Hints hints={rowHints} mode='row'/>
-        <Grid squares={solution} startDrag={handleMouseDrag} continueDrag={handleMouseEnter} endDrag={handleMouseUp}/>
-      </div> 
-    </div>
+      <div className="game-container" onContextMenu={(e) => e.preventDefault()}>
+        <div className="top-bar">
+          <div className="corner"/>
+          <Hints hints={colHints} mode="col"/>
+        </div>
+        <div className="bottom-bar">
+          <Hints hints={rowHints} mode="row"/>
+          <Grid squares={solution} startDrag={handleMouseDrag} continueDrag={handleMouseEnter} endDrag={handleMouseUp}/>
+        </div>
+      </div>
+    </div>  
+    </>
   );
 }
 
