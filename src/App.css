@@ -2,8 +2,44 @@
 
 .game-container{
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-top: 6.5rem;
+    margin-top: 2.5rem;
 }
+
+.top-bar,.side-bar{
+    display: flex;
+}
+
+.row-hints-container{
+    display: flex;
+    flex-direction: column;
+    width: 55px;
+}
+
+.col-hints-container{
+    display: flex;
+    flex-direction:row;
+}
+.hint-row{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 5px;
+    height: 55px;
+    padding-right: 4px;
+}
+
+.hint-col{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 5px;
+    width: 55px;
+    padding-bottom: 4px;
+}
+
+

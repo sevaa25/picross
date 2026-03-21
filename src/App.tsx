@@ -103,6 +103,16 @@ const [rowHints,colHints] = generateHints(solution);
 console.log(rowHints);
 console.log(colHints);
 
+const Hints = ({ hints, mode }: { hints: number[][], mode: 'row' | 'col' }) => (
+  <div className={`${mode}-hints-container`}>
+    {hints.map((line, i) => (
+      <div key={i} className={`hint-${mode}`}>
+        {line.map((num, j) => <span key={j}>{num}</span>)}
+      </div>
+    ))}
+  </div>
+);
+
 function App() {
 
   const [matrix, setMatrix] = useState<CellState[][]>(generateEmptyBoard);
@@ -162,9 +172,18 @@ function App() {
     setIsDragging(false);
     setActiveValue(null);
   }
+
+ 
   return (
     <div className='game-container' onContextMenu={(e) => e.preventDefault()}>
-      <Grid squares={solution} startDrag={handleMouseDrag} continueDrag={handleMouseEnter} endDrag={handleMouseUp}/>
+      <div className='top-bar'>
+        <div style={{width: '55px'}}/>
+        <Hints hints={colHints} mode='col'/>
+      </div>
+      <div className='side-bar'>
+        <Hints hints={rowHints} mode='row'/>
+        <Grid squares={solution} startDrag={handleMouseDrag} continueDrag={handleMouseEnter} endDrag={handleMouseUp}/>
+      </div> 
     </div>
   );
 }
