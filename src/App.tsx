@@ -63,15 +63,51 @@ function generateSolution(): CellState[][] {
 
   return res;
 }
+function generateHints(solution: CellState[][]): [number[][], number[][]] {
+  const rows = solution.length;
+  const cols = solution[0].length; 
+  const rowHints: number[][] = Array.from({ length: rows }, () => []);
+  const colHints: number[][] = Array.from({ length: rows }, () => []);
+
+  for (let i = 0; i < rows; i++) {
+    let filledRowBlockSize = 0;
+    let filledColBlockSize = 0; 
+    for (let j = 0; j < cols; j++) {
+      if (solution[i][j] === "filled") { filledRowBlockSize++; } 
+      else {
+        if (filledRowBlockSize > 0) {
+          rowHints[i].push(filledRowBlockSize);
+          filledRowBlockSize = 0;
+        }
+      }
+      if (solution[j][i] === "filled") { filledColBlockSize++; } 
+      else {
+        if (filledColBlockSize > 0) {
+          colHints[i].push(filledColBlockSize);
+          filledColBlockSize = 0;
+        }
+      }
+    }
+    if (filledRowBlockSize > 0 ) {
+      rowHints[i].push(filledRowBlockSize);
+    }
+    if(filledColBlockSize > 0){
+      colHints[i].push(filledColBlockSize);
+    }
+  }
+  return [rowHints, colHints];
+}
+
 const solution:CellState[][] = generateSolution();
-console.log(solution);
+const [rowHints,colHints] = generateHints(solution);
+console.log(rowHints);
+console.log(colHints);
 
 function App() {
 
   const [matrix, setMatrix] = useState<CellState[][]>(generateEmptyBoard);
   const [isDragging, setIsDragging] = useState(false);
   const [activeValue, setActiveValue] = useState<CellState | null>(null);
-
 
   useEffect(() => {
     const handleGlobalMouseUp = () => {
@@ -128,7 +164,7 @@ function App() {
   }
   return (
     <div className='game-container' onContextMenu={(e) => e.preventDefault()}>
-      <Grid squares={matrix} startDrag={handleMouseDrag} continueDrag={handleMouseEnter} endDrag={handleMouseUp}/>
+      <Grid squares={solution} startDrag={handleMouseDrag} continueDrag={handleMouseEnter} endDrag={handleMouseUp}/>
     </div>
   );
 }
