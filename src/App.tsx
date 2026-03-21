@@ -3,6 +3,10 @@ import {useState, useEffect} from 'react';
 import Grid from './components/Grid.tsx';
 export type CellState = "empty" | "filled" | "marked";
 
+function generateEmptyBoard(): CellState[][] {
+    return Array(10).fill(null).map(() => Array(10).fill("empty"));
+  };
+
 const getRandomInt = (min: number, max: number): number => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
@@ -11,13 +15,13 @@ const getChunk = (min: number, max: number): number => {
   const p = getRandomInt(1, 100); 
   let size = 1;
 
-  if (p <= 50) {
+  if (p <= 55) {
     size = 1  
   } 
-  else if (p <= 80) {
+  else if (p <= 85) {
     size = 2;                    
   } 
-  else if (p <= 92) {
+  else if (p <= 95) {
     size = 3;                   
   } 
   else if (p <= 99) {
@@ -28,49 +32,45 @@ const getChunk = (min: number, max: number): number => {
   return Math.max(min, Math.min(size, max));
 };
 
+function generateSolution(): CellState[][] {
+  const solutionMatrix: CellState[][] = generateEmptyBoard();
+  const m = solutionMatrix.length;
+
+  for (let x = 0; x < m; x++) {
+    let availableCells = m;
+    let generatedNumber = getChunk(1, m);
+    availableCells -= generatedNumber; 
+    let startIndex = getRandomInt(0, Math.min(availableCells, 2));
+
+    while (availableCells >= 0) { 
+      for (let y = startIndex; y < startIndex + generatedNumber; y++) {
+        if (y < m) solutionMatrix[x][y] = "filled"; 
+      }
+      startIndex += generatedNumber;
+      availableCells= m - startIndex;
+      if (availableCells <= 0) break;
+      const gap = getChunk(1, availableCells);
+      startIndex += gap;
+      availableCells = m - startIndex;
+      if (availableCells <= 0) break;
+      generatedNumber = getChunk(1, availableCells);
+      availableCells -= generatedNumber;
+    }
+  }
+  const res = solutionMatrix.map((row) =>
+    row.map((val) => (val === "empty" ? "marked" : "filled"))
+  );
+
+  return res;
+}
+const solution:CellState[][] = generateSolution();
+console.log(solution);
 
 function App() {
 
-  function generateEmptyBoard(): CellState[][] {
-    return Array(10).fill(null).map(() => Array(10).fill("empty"));
-  };
   const [matrix, setMatrix] = useState<CellState[][]>(generateEmptyBoard);
   const [isDragging, setIsDragging] = useState(false);
   const [activeValue, setActiveValue] = useState<CellState | null>(null);
-
-  function generateSolution(): CellState[][] {
-    const solutionMatrix: CellState[][] = generateEmptyBoard();
-    const m = solutionMatrix.length;
-
-    for (let x = 0; x < m; x++) {
-      let availableCells = m;
-      let generatedNumber = getChunk(1, m);
-      availableCells -= generatedNumber; 
-      let startIndex = getRandomInt(0, Math.min(availableCells, 2));
-
-      while (availableCells >= 0) { 
-        for (let y = startIndex; y < startIndex + generatedNumber; y++) {
-          if (y < m) solutionMatrix[x][y] = "filled"; 
-        }
-        startIndex += generatedNumber;
-        availableCells= m - startIndex;
-        if (availableCells <= 0) break;
-        const gap = getChunk(1, availableCells);
-        startIndex += gap;
-        availableCells = m - startIndex;
-        if (availableCells <= 0) break;
-        generatedNumber = getChunk(1, availableCells);
-        availableCells -= generatedNumber;
-      }
-    }
-    const res = solutionMatrix.map((row) =>
-      row.map((val) => (val === "empty" ? "marked" : "filled"))
-    );
-  
-    return res;
-  }
-  const solution:CellState[][] = generateSolution();
-  console.log(solution);
 
 
   useEffect(() => {
@@ -128,7 +128,7 @@ function App() {
   }
   return (
     <div className='game-container' onContextMenu={(e) => e.preventDefault()}>
-      <Grid squares={solution} startDrag={handleMouseDrag} continueDrag={handleMouseEnter} endDrag={handleMouseUp}/>
+      <Grid squares={matrix} startDrag={handleMouseDrag} continueDrag={handleMouseEnter} endDrag={handleMouseUp}/>
     </div>
   );
 }
