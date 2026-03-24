@@ -1,4 +1,4 @@
-.emptySquare, .filledSquare, .markedSquare {
+.emptySquare, .filledSquare, .markedSquare, .completedSquare, .wrongSquare {
   width: 55px;
   height: 55px;
   display: flex;
@@ -8,20 +8,29 @@
   font-weight: bold;
   font-size: 20px;
   cursor: pointer;
-  user-select: none; 
+  user-select: none;
+  box-sizing: border-box;
+  border: 1px solid rgba(127, 125, 125, 0.89); 
 }
 
 .emptySquare {
   background-color: white;
 }
 
+.emptySquare:hover{background-color: orange;}
+
 .filledSquare {
-  background-color: #37c2cc; 
+  background-color: #2cd6e2d2; 
 }
 
 .markedSquare {
-  background-color: rgb(186, 177, 177);
+  background-color: rgb(215, 209, 209);
   color: black; 
 }
 
-.emptySquare:hover{background-color: orange;}
+.completedSquare{
+  background-color: red;
+}
+
+.wrongSquare{background-color: rgb(23, 22, 22); border: 1px solid white;}
+

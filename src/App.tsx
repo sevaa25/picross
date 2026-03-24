@@ -1,7 +1,7 @@
 import './App.css'
 import {useState, useEffect} from 'react';
 import Grid from './components/Grid.tsx';
-export type CellState = "empty" | "filled" | "marked";
+export type CellState = "empty" | "filled" | "marked" | "completed" | "wrong";
 
 function generateEmptyBoard(): CellState[][] {
     return Array(10).fill(null).map(() => Array(10).fill("empty"));
@@ -100,8 +100,7 @@ function generateHints(solution: CellState[][]): [number[][], number[][]] {
 
 const solution:CellState[][] = generateSolution();
 const [rowHints,colHints] = generateHints(solution);
-console.log(rowHints);
-console.log(colHints);
+console.log(solution);
 
 const Hints = ({ hints, mode }: { hints: number[][], mode: 'row' | 'col' }) => (
   <div className={`${mode}-hints-container`}>
@@ -139,13 +138,20 @@ function App() {
   }, []
   ); 
 
-  // function compareSolutions(){
-  //   for (let i = 0; i < matrix.length; i++){
-  //     for(let j = 0; j < matrix[i].length; j++){
-  //       if (matrix[i][j] !== )
-  //     }
-  //   }
-  // }
+  function compareSolutions(){
+    const isCompleted = matrix.every((row,x)=>
+      row.every((val, y)=>{
+        return (solution[x][y] === "filled") === (val === "filled"); 
+      }))
+    if (isCompleted){
+      setMatrix(prev => prev.map(row => 
+        row.map((val)=>val === "filled" ? "completed" : "empty")));
+    }
+    else {
+      setMatrix(prev => prev.map(row => 
+        row.map((val)=>val === "filled" ? "wrong" : "empty")));
+    }
+  }
 
   const buttonClicked = (event: React.MouseEvent): boolean => {
     return event.button === 2 || event.buttons === 2;
@@ -188,7 +194,7 @@ function App() {
       <div className="side-bar">
         <h2>MyPicross</h2>
         <div className="progress-bar">
-          <button type="button" className="solve-btn">Solve Puzzle</button>
+          <button type="button" className="solve-btn" onClick={compareSolutions}>Solve Puzzle</button>
         </div>
       </div>
       <div className="game-container" onContextMenu={(e) => e.preventDefault()}>
@@ -198,7 +204,7 @@ function App() {
         </div>
         <div className="bottom-bar">
           <Hints hints={rowHints} mode="row"/>
-          <Grid squares={solution} startDrag={handleMouseDrag} continueDrag={handleMouseEnter} endDrag={handleMouseUp}/>
+          <Grid squares={matrix} startDrag={handleMouseDrag} continueDrag={handleMouseEnter} endDrag={handleMouseUp}/>
         </div>
       </div>
     </div>  
