@@ -119,6 +119,7 @@ function App() {
   const [solution, setSolution] = useState<CellState[][]>(firstSolution);
   const [rowHints, setRowHints] = useState<number[][]>(firstRowHints);
   const [colHints, setColHints] = useState<number[][]>(firstColHints);
+  const [isSolved, setIsSolved] = useState(false);
 
   useEffect(() => {
     const handleGlobalMouseUp = () => {
@@ -149,20 +150,22 @@ function App() {
     setColHints(newColHints);
 
     setMatrix(generateEmptyBoard());
+    setIsSolved(false);
   }
   function compareSolutions(){
     const isCompleted = matrix.every((row,x)=>
-      row.every((val, y)=>{
-        return (solution[x][y] === "filled") === (val === "filled"); 
-      }))
+    row.every((val, y)=>{
+      return (solution[x][y] === "filled") === (val === "filled"); 
+    }));
     if (isCompleted){
-      setMatrix(prev => prev.map(row => 
+        setMatrix(prev => prev.map(row => 
         row.map((val)=>val === "filled" ? "completed" : "empty")));
     }
     else {
       setMatrix(prev => prev.map(row => 
         row.map((val)=>val === "filled" ? "wrong" : "empty")));
     }
+    setIsSolved(true);
   }
 
   const buttonClicked = (event: React.MouseEvent): boolean => {
@@ -170,6 +173,8 @@ function App() {
   };
 
   function handleMouseDrag(x: number, y: number, event: React.MouseEvent){
+    if(isSolved) return;
+
     setIsDragging(true);
     const isRightClick = buttonClicked(event);
     const currentVal = matrix[y][x];
@@ -188,7 +193,7 @@ function App() {
 
 
   function handleMouseEnter(x: number, y: number){
-    if(!isDragging || activeValue === null) return;
+    if(isSolved || !isDragging || activeValue === null) return;
     setMatrix(prev => prev.map((row, _y) => 
       _y === y ? row.map((val, _x) => (_x === x ? activeValue : val)) : row
     ));
@@ -206,7 +211,7 @@ function App() {
       <div className="side-bar">
         <h2>MyPicross</h2>
         <div className="progress-bar">
-          <button type="button" className="side-btn" onClick={compareSolutions}>Solve Puzzle</button>
+          <button type="button" className="side-btn" disabled={isSolved} onClick={compareSolutions}>Solve Puzzle</button>
           <button type="button" className="side-btn" onClick={newGame}>New Game</button>
         </div>
       </div>
@@ -217,7 +222,9 @@ function App() {
         </div>
         <div className="bottom-bar">
           <Hints hints={rowHints} mode="row"/>
-          <Grid squares={matrix} startDrag={handleMouseDrag} continueDrag={handleMouseEnter} endDrag={handleMouseUp}/>
+          <div className={isSolved ? 'locked-grid' : ""}>
+            <Grid squares={matrix} startDrag={handleMouseDrag} continueDrag={handleMouseEnter} endDrag={handleMouseUp}/>
+          </div>
         </div>
       </div>
     </div>  

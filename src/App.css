@@ -1,4 +1,4 @@
-*{background-color: rgb(211, 206, 206); font-family: Tahoma, sans-serif;}
+*{background-color: rgb(243, 227, 201); font-family: Tahoma, sans-serif;}
 
 .main-layout {
     display: flex;
@@ -95,12 +95,13 @@
 .side-btn{
     border: 1px solid black;
     background-color: rgb(232, 222, 222);
-    margin: 3px 10px;
+    margin: 5px 10px;
+    padding: 10px;
 }
 
-.solve-btn:hover{
+.side-btn:hover{
     border: 1px solid rgb(232, 222, 222);
     background-color: black;
     color: white;
 }
-
+.locked-grid{pointer-events: none;}
