@@ -98,9 +98,9 @@ function generateHints(solution: CellState[][]): [number[][], number[][]] {
   return [rowHints, colHints];
 }
 
-const solution:CellState[][] = generateSolution();
-const [rowHints,colHints] = generateHints(solution);
-console.log(solution);
+const firstSolution:CellState[][] = generateSolution();
+const [firstRowHints,firstColHints] = generateHints(firstSolution);
+console.log(firstSolution);
 
 const Hints = ({ hints, mode }: { hints: number[][], mode: 'row' | 'col' }) => (
   <div className={`${mode}-hints-container`}>
@@ -113,10 +113,12 @@ const Hints = ({ hints, mode }: { hints: number[][], mode: 'row' | 'col' }) => (
 );
 
 function App() {
-
   const [matrix, setMatrix] = useState<CellState[][]>(generateEmptyBoard);
   const [isDragging, setIsDragging] = useState(false);
   const [activeValue, setActiveValue] = useState<CellState | null>(null);
+  const [solution, setSolution] = useState<CellState[][]>(firstSolution);
+  const [rowHints, setRowHints] = useState<number[][]>(firstRowHints);
+  const [colHints, setColHints] = useState<number[][]>(firstColHints);
 
   useEffect(() => {
     const handleGlobalMouseUp = () => {
@@ -138,6 +140,16 @@ function App() {
   }, []
   ); 
 
+  function newGame(){
+    const newSolution = generateSolution();
+    const [newRowHints, newColHints] = generateHints(newSolution);
+    
+    setSolution(newSolution);
+    setRowHints(newRowHints);
+    setColHints(newColHints);
+
+    setMatrix(generateEmptyBoard());
+  }
   function compareSolutions(){
     const isCompleted = matrix.every((row,x)=>
       row.every((val, y)=>{
@@ -194,7 +206,8 @@ function App() {
       <div className="side-bar">
         <h2>MyPicross</h2>
         <div className="progress-bar">
-          <button type="button" className="solve-btn" onClick={compareSolutions}>Solve Puzzle</button>
+          <button type="button" className="side-btn" onClick={compareSolutions}>Solve Puzzle</button>
+          <button type="button" className="side-btn" onClick={newGame}>New Game</button>
         </div>
       </div>
       <div className="game-container" onContextMenu={(e) => e.preventDefault()}>

@@ -10,7 +10,7 @@
   cursor: pointer;
   user-select: none;
   box-sizing: border-box;
-  border: 1px solid rgba(127, 125, 125, 0.89); 
+  border: 0,5px solid rgba(0, 0, 0, 0.89); 
 }
 
 .emptySquare {
