@@ -2,6 +2,11 @@ import './App.css'
 import {useState, useEffect} from 'react';
 import Grid from './components/Grid.tsx';
 export type CellState = "empty" | "filled" | "marked" | "completed" | "wrong";
+export type HintState = {
+  value: number,
+  start: number,
+  end: number
+}
 
 function generateEmptyBoard(): CellState[][] {
     return Array(10).fill(null).map(() => Array(10).fill("empty"));
@@ -63,62 +68,117 @@ function generateSolution(): CellState[][] {
 
   return res;
 }
-function generateHints(solution: CellState[][]): [number[][], number[][]] {
+function generateHints(solution: CellState[][]): [HintState[][], HintState[][]] {
   const rows = solution.length;
   const cols = solution[0].length; 
-  const rowHints: number[][] = Array.from({ length: rows }, () => []);
-  const colHints: number[][] = Array.from({ length: rows }, () => []);
+  const rowHints: HintState[][] = Array.from({ length: rows }, () => []);
+  const colHints: HintState[][] = Array.from({ length: cols }, () => []);
 
   for (let i = 0; i < rows; i++) {
     let filledRowBlockSize = 0;
+    let rowBlockStart = -1; 
+
     let filledColBlockSize = 0; 
+    let colBlockStart = -1; 
+
     for (let j = 0; j < cols; j++) {
-      if (solution[i][j] === "filled") { filledRowBlockSize++; } 
+      if (solution[i][j] === "filled") { 
+        if (filledRowBlockSize === 0) rowBlockStart = j; 
+        filledRowBlockSize++; 
+      } 
       else {
         if (filledRowBlockSize > 0) {
-          rowHints[i].push(filledRowBlockSize);
+          rowHints[i].push({
+            value: filledRowBlockSize,
+            start: rowBlockStart,
+            end: j - 1 
+          });
           filledRowBlockSize = 0;
         }
       }
-      if (solution[j][i] === "filled") { filledColBlockSize++; } 
+
+      if (solution[j][i] === "filled") { 
+        if (filledColBlockSize === 0) colBlockStart = j; 
+        filledColBlockSize++; 
+      } 
       else {
         if (filledColBlockSize > 0) {
-          colHints[i].push(filledColBlockSize);
+          colHints[i].push({
+            value: filledColBlockSize,
+            start: colBlockStart,
+            end: j - 1 
+          });
           filledColBlockSize = 0;
         }
       }
     }
+
     if (filledRowBlockSize > 0 ) {
-      rowHints[i].push(filledRowBlockSize);
+      rowHints[i].push({
+        value: filledRowBlockSize,
+        start: rowBlockStart,
+        end: cols - 1 
+      });
     }
-    if(filledColBlockSize > 0){
-      colHints[i].push(filledColBlockSize);
+    if (filledColBlockSize > 0){
+      colHints[i].push({
+        value: filledColBlockSize,
+        start: colBlockStart,
+        end: rows - 1 
+      });
     }
   }
   return [rowHints, colHints];
 }
-
 const firstSolution:CellState[][] = generateSolution();
 const [firstRowHints,firstColHints] = generateHints(firstSolution);
 console.log(firstSolution);
 
-const Hints = ({ hints, mode }: { hints: number[][], mode: 'row' | 'col' }) => (
-  <div className={`${mode}-hints-container`}>
-    {hints.map((line, i) => (
-      <div key={i} className={`hint-${mode}`}>
-        {line.map((num, j) => <span key={j}>{num}</span>)}
-      </div>
-    ))}
-  </div>
-);
+function isHintCrossed(hint: HintState, playerLine: CellState[]): boolean {
+  for (let k = hint.start; k <= hint.end; k++) {
+    if (playerLine[k] !== "filled") return false;
+  }
+
+  if (hint.start > 0 && playerLine[hint.start - 1] === "filled") return false;
+  if (hint.end < playerLine.length - 1 && playerLine[hint.end + 1] === "filled") return false;
+
+  return true;
+}
+
+const Hints = ({ hints, mode, matrix }: { hints: HintState[][], mode: 'row' | 'col', matrix: CellState[][] }) => {
+  const getPlayerLine = (index: number) => {
+    if (mode === 'row') return matrix[index];
+    return matrix.map(row => row[index]); 
+  };
+
+  return (
+    <div className={`${mode}-hints-container`}>
+      {hints.map((lineHints, i) => {
+        const playerLine = getPlayerLine(i); 
+        return (
+          <div key={i} className={`hint-${mode}`}>
+            {lineHints.map((hint, j) => {
+              const crossed = isHintCrossed(hint, playerLine);
+              return (
+                <span key={j} className={crossed ? "crossed-out" : ""}>
+                  {hint.value}
+                </span>
+              );
+            })}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
 
 function App() {
   const [matrix, setMatrix] = useState<CellState[][]>(generateEmptyBoard);
   const [isDragging, setIsDragging] = useState(false);
   const [activeValue, setActiveValue] = useState<CellState | null>(null);
   const [solution, setSolution] = useState<CellState[][]>(firstSolution);
-  const [rowHints, setRowHints] = useState<number[][]>(firstRowHints);
-  const [colHints, setColHints] = useState<number[][]>(firstColHints);
+  const [rowHints, setRowHints] = useState<HintState[][]>(firstRowHints);
+  const [colHints, setColHints] = useState<HintState[][]>(firstColHints);
   const [isSolved, setIsSolved] = useState(false);
 
   useEffect(() => {
@@ -140,6 +200,7 @@ function App() {
     };
   }, []
   ); 
+
 
   function newGame(){
     const newSolution = generateSolution();
@@ -218,10 +279,10 @@ function App() {
       <div className="game-container" onContextMenu={(e) => e.preventDefault()}>
         <div className="top-bar">
           <div className="corner"/>
-          <Hints hints={colHints} mode="col"/>
+          <Hints hints={colHints} mode="col" matrix={matrix}/>
         </div>
         <div className="bottom-bar">
-          <Hints hints={rowHints} mode="row"/>
+          <Hints hints={rowHints} mode="row" matrix={matrix}/>
           <div className={isSolved ? 'locked-grid' : ""}>
             <Grid squares={matrix} startDrag={handleMouseDrag} continueDrag={handleMouseEnter} endDrag={handleMouseUp}/>
           </div>

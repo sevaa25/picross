@@ -67,6 +67,7 @@
     padding-bottom: 7px;
 }
 
+.crossed-out {color: rgb(207, 192, 192); text-decoration: line-through;}
 .corner{
     height: 100px;
     width: 100px;
@@ -105,3 +106,4 @@
     color: white;
 }
 .locked-grid{pointer-events: none;}
+
