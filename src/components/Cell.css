@@ -14,10 +14,10 @@
 }
 
 .emptySquare {
-  background-color: white;
+  background-color: white; 
 }
 
-.emptySquare:hover{background-color: orange;}
+.emptySquare:hover{background-color: orange; }
 
 .filledSquare {
   background-color: #2cd6e2d2; 

@@ -2,6 +2,7 @@ import './App.css'
 import {useState, useEffect} from 'react';
 import Grid from './components/Grid.tsx';
 export type CellState = "empty" | "filled" | "marked" | "completed" | "wrong";
+export type GameMode = "live_validation" | "no_live_validation";
 export type HintState = {
   value: number,
   start: number,
@@ -179,6 +180,8 @@ function App() {
   const [solution, setSolution] = useState<CellState[][]>(firstSolution);
   const [rowHints, setRowHints] = useState<HintState[][]>(firstRowHints);
   const [colHints, setColHints] = useState<HintState[][]>(firstColHints);
+  const [gameMode, setGameMode] = useState<GameMode>("live_validation");
+  const [mistakes, setMistakes] = useState(0);
   const [isSolved, setIsSolved] = useState(false);
 
   useEffect(() => {
@@ -201,7 +204,6 @@ function App() {
   }, []
   ); 
 
-
   function newGame(){
     const newSolution = generateSolution();
     const [newRowHints, newColHints] = generateHints(newSolution);
@@ -213,6 +215,13 @@ function App() {
     setMatrix(generateEmptyBoard());
     setIsSolved(false);
   }
+
+  function changeGameMode(){
+    const newMode = gameMode === "live_validation" ? "no_live_validation" : "live_validation";
+    setGameMode(newMode);
+    newGame();
+  }
+
   function compareSolutions(){
     const isCompleted = matrix.every((row,x)=>
     row.every((val, y)=>{
@@ -274,6 +283,11 @@ function App() {
         <div className="progress-bar">
           <button type="button" className="side-btn" disabled={isSolved} onClick={compareSolutions}>Solve Puzzle</button>
           <button type="button" className="side-btn" onClick={newGame}>New Game</button>
+          <div className={gameMode === "live_validation" ? "mistakes-chart" : "mistakes-valid"}>
+            <h3>Mistakes</h3>
+            <span>{mistakes}</span>
+          </div>
+          <button type="button" className="side-btn" onClick={changeGameMode}>{gameMode === "live_validation" ? "Disable" : "Enable"} live validation</button>
         </div>
       </div>
       <div className="game-container" onContextMenu={(e) => e.preventDefault()}>
@@ -284,7 +298,8 @@ function App() {
         <div className="bottom-bar">
           <Hints hints={rowHints} mode="row" matrix={matrix}/>
           <div className={isSolved ? 'locked-grid' : ""}>
-            <Grid squares={matrix} startDrag={handleMouseDrag} continueDrag={handleMouseEnter} endDrag={handleMouseUp}/>
+            <Grid squares={matrix} startDrag={handleMouseDrag} continueDrag={handleMouseEnter} 
+              endDrag={handleMouseUp} mode={gameMode}/>
           </div>
         </div>
       </div>
