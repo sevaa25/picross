@@ -37,23 +37,12 @@
   animation: rainbow-push 2.5s linear infinite;
 }
 
-@keyframes rainbow-push {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 200% 50%; }
-}
-
 .wrongSquare{background-color: rgb(23, 22, 22); border: 1px solid white;}
 
 .wrongguessSquare,.mistakeSquare{color: rgba(171, 9, 9, 0.855);}
 .mistakeSquare{background-color: white;}
 
-@keyframes rainbow{
-  0% {background-color: red;}
-  12% {background-color: orange;}
-  25% {background-color: yellow;}
-  37% {background-color: green;}
-  50% {background-color: blue;}
-  62% {background-color: aqua;}
-  75% {background-color: purple;}
-  100% {background-color: red;}
+@keyframes rainbow-push {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
 }

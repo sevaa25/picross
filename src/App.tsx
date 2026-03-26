@@ -133,7 +133,6 @@ function generateHints(solution: CellState[][]): [HintState[][], HintState[][]] 
 }
 const firstSolution:CellState[][] = generateSolution();
 const [firstRowHints,firstColHints] = generateHints(firstSolution);
-console.log(firstSolution);
 
 function isHintCrossed(hint: HintState, playerLine: CellState[]): boolean {
   for (let k = hint.start; k <= hint.end; k++) {
@@ -210,13 +209,11 @@ function App() {
 
   function newGame(){
     const newSolution = generateSolution();
-    console.log(newSolution);
     const [newRowHints, newColHints] = generateHints(newSolution);
     
     setSolution(newSolution);
     setRowHints(newRowHints);
     setColHints(newColHints);
-
     setMatrix(generateEmptyBoard());
     setMistakes(0);
     setIsSolved(false);
@@ -304,9 +301,7 @@ function App() {
       }
     }
     setMatrix(prev => prev.map((row, _y) =>
-
       _y === y ? row.map((val, _x) => (_x === x ? targetValue : val)) : row
-
     ));
 
     if (gameMode === "live_validation") {
