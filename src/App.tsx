@@ -210,6 +210,7 @@ function App() {
 
   function newGame(){
     const newSolution = generateSolution();
+    console.log(newSolution);
     const [newRowHints, newColHints] = generateHints(newSolution);
     
     setSolution(newSolution);
@@ -302,19 +303,26 @@ function App() {
         setMistakes(m => m + 1);
       }
     }
-    setMatrix(prev => prev.map((row, _y) => 
+    setMatrix(prev => prev.map((row, _y) =>
+
       _y === y ? row.map((val, _x) => (_x === x ? targetValue : val)) : row
+
     ));
-    const isWon = liveWinCheck(matrix);
-    if(isWon && mistakes === 0){
-      setMatrix(prev => prev.map(row => 
-          row.map((val)=>val === "filled" ? "completed" : "mistake")));
-      setIsSolved(true);
-    }
-    if(isWon && mistakes !== 0){
-      setMatrix(prev => prev.map(row => 
-          row.map((val)=>val === "filled" ? "wrong" : "mistake")));
-      setIsSolved(true);
+
+    if (gameMode === "live_validation") {
+        const isWon = liveWinCheck(matrix);
+        if (isWon) {
+          if (mistakes === 0) {
+            setMatrix(matrix.map(row => 
+              row.map((val) => val === "filled" ? "completed" : "mistake")
+            ));
+          } else {
+            setMatrix(matrix.map(row => 
+              row.map((val) => val === "filled" ? "wrong" : "mistake")
+            ));
+          }
+          setIsSolved(true);
+        }
     }
   }
 
@@ -322,16 +330,21 @@ function App() {
   function handleMouseUp(){
     setIsDragging(false);
     setActiveValue(null);
+    setMatrix(matrix);
+    if (gameMode === "live_validation") {
     const isWon = liveWinCheck(matrix);
-    if(isWon && mistakes === 0){
-      setMatrix(prev => prev.map(row => 
-          row.map((val)=>val === "filled" ? "completed" : "empty")));
+    if (isWon) {
+      if (mistakes === 0) {
+        setMatrix(matrix.map(row => 
+          row.map((val) => val === "filled" ? "completed" : "mistake")
+        ));
+      } else {
+        setMatrix(matrix.map(row => 
+          row.map((val) => val === "filled" ? "wrong" : "mistake")
+        ));
+      }
       setIsSolved(true);
     }
-    if(isWon && mistakes !== 0){
-      setMatrix(prev => prev.map(row => 
-          row.map((val)=>val === "filled" ? "wrong" : "empty")));
-      setIsSolved(true);
     }
   }
 
