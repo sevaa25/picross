@@ -1,7 +1,7 @@
 import './App.css'
 import {useState, useEffect} from 'react';
 import Grid from './components/Grid.tsx';
-export type CellState = "empty" | "filled" | "marked" | "completed" | "wrong";
+export type CellState = "empty" | "filled" | "marked" | "completed" | "wrong" | "wrongguess" | "mistake";
 export type GameMode = "live_validation" | "no_live_validation";
 export type HintState = {
   value: number,
@@ -194,8 +194,11 @@ function App() {
       e.preventDefault();
     };
 
+
+
     window.addEventListener("mouseup", handleGlobalMouseUp);
     window.addEventListener("contextmenu",blockContextMenu);
+
 
     return () => {
       window.removeEventListener("mouseup", handleGlobalMouseUp);
@@ -203,6 +206,7 @@ function App() {
     };
   }, []
   ); 
+
 
   function newGame(){
     const newSolution = generateSolution();
@@ -213,6 +217,7 @@ function App() {
     setColHints(newColHints);
 
     setMatrix(generateEmptyBoard());
+    setMistakes(0);
     setIsSolved(false);
   }
 
@@ -222,56 +227,112 @@ function App() {
     newGame();
   }
 
-  function compareSolutions(){
-    const isCompleted = matrix.every((row,x)=>
-    row.every((val, y)=>{
-      return (solution[x][y] === "filled") === (val === "filled"); 
-    }));
-    if (isCompleted){
-        setMatrix(prev => prev.map(row => 
-        row.map((val)=>val === "filled" ? "completed" : "empty")));
-    }
-    else {
-      setMatrix(prev => prev.map(row => 
-        row.map((val)=>val === "filled" ? "wrong" : "empty")));
-    }
-    setIsSolved(true);
+  function liveWinCheck(currentMatrix: CellState[][]): boolean {
+    return currentMatrix.every((row, x) =>
+      row.every((val, y) => {
+        return (solution[x][y] === "filled") === (val === "filled");
+      })
+    );
   }
+
+  function solvePuzzle(){
+      const isCompleted = liveWinCheck(matrix);
+      if (isCompleted){
+          setMatrix(prev => prev.map(row => 
+          row.map((val)=>val === "filled" ? "completed" : "empty")));
+      }
+      else {
+        setMatrix(prev => prev.map(row => 
+          row.map((val)=>val === "filled" ? "wrong" : "empty")));
+      }
+      setIsSolved(true);
+  };
 
   const buttonClicked = (event: React.MouseEvent): boolean => {
     return event.button === 2 || event.buttons === 2;
   };
 
-  function handleMouseDrag(x: number, y: number, event: React.MouseEvent){
-    if(isSolved) return;
+  function handleMouseDrag(x: number, y: number, event: React.MouseEvent) {
+    if (isSolved) return;
 
     setIsDragging(true);
     const isRightClick = buttonClicked(event);
-    const currentVal = matrix[y][x];
-    let targetValue: CellState;
-    if(isRightClick) { 
-      targetValue = currentVal === "marked" ? "empty" : "marked";
+    const currentVal = matrix[y][x];  
+    let intendedValue: CellState; 
+
+    if (isRightClick) {
+      intendedValue = currentVal === "marked" ? "empty" : "marked";
+    } else {
+      intendedValue = currentVal === "filled" ? "empty" : "filled";
     }
-    else {
-      targetValue = currentVal === "filled" ? "empty" : "filled";
+
+    setActiveValue(intendedValue);
+    let targetValue:CellState = intendedValue;
+
+    if (gameMode !== "no_live_validation") {
+      if (!isRightClick && targetValue === "filled" && solution[y][x] !== "filled") {
+        targetValue = "wrongguess";
+        setMistakes(m => m + 1);
+      }
+      else if (isRightClick && targetValue === "marked" && solution[y][x] === "filled") {
+        targetValue = "wrongguess";
+        setMistakes(m => m + 1);
+      }
     }
-    setActiveValue(targetValue);
+
     setMatrix(prev => prev.map((row, _y) => 
       _y === y ? row.map((val, _x) => (_x === x ? targetValue : val)) : row
     ));
+
+  }
+  function handleMouseEnter(x: number, y: number) {
+    if (isSolved || !isDragging || activeValue === null) return;
+
+    const currentVal = matrix[y][x];
+    if (currentVal === activeValue || currentVal === "wrongguess") return;
+    let targetValue: CellState = activeValue;
+
+    if (gameMode !== "no_live_validation") {
+      if (activeValue === "filled" && solution[y][x] !== "filled") {
+        targetValue = "wrongguess";
+        setMistakes(m => m + 1);
+      } 
+      else if (activeValue === "marked" && solution[y][x] === "filled") {
+        targetValue = "wrongguess";
+        setMistakes(m => m + 1);
+      }
+    }
+    setMatrix(prev => prev.map((row, _y) => 
+      _y === y ? row.map((val, _x) => (_x === x ? targetValue : val)) : row
+    ));
+    const isWon = liveWinCheck(matrix);
+    if(isWon && mistakes === 0){
+      setMatrix(prev => prev.map(row => 
+          row.map((val)=>val === "filled" ? "completed" : "mistake")));
+      setIsSolved(true);
+    }
+    if(isWon && mistakes !== 0){
+      setMatrix(prev => prev.map(row => 
+          row.map((val)=>val === "filled" ? "wrong" : "mistake")));
+      setIsSolved(true);
+    }
   }
 
-
-  function handleMouseEnter(x: number, y: number){
-    if(isSolved || !isDragging || activeValue === null) return;
-    setMatrix(prev => prev.map((row, _y) => 
-      _y === y ? row.map((val, _x) => (_x === x ? activeValue : val)) : row
-    ));
-    }
-  
+ 
   function handleMouseUp(){
     setIsDragging(false);
     setActiveValue(null);
+    const isWon = liveWinCheck(matrix);
+    if(isWon && mistakes === 0){
+      setMatrix(prev => prev.map(row => 
+          row.map((val)=>val === "filled" ? "completed" : "empty")));
+      setIsSolved(true);
+    }
+    if(isWon && mistakes !== 0){
+      setMatrix(prev => prev.map(row => 
+          row.map((val)=>val === "filled" ? "wrong" : "empty")));
+      setIsSolved(true);
+    }
   }
 
  
@@ -281,12 +342,13 @@ function App() {
       <div className="side-bar">
         <h2>MyPicross</h2>
         <div className="progress-bar">
-          <button type="button" className="side-btn" disabled={isSolved} onClick={compareSolutions}>Solve Puzzle</button>
-          <button type="button" className="side-btn" onClick={newGame}>New Game</button>
+          <button type="button" className={gameMode === "no_live_validation" ? "side-btn" : "mistakes-valid"} disabled={isSolved} 
+            onClick={solvePuzzle}>Solve Puzzle</button> 
           <div className={gameMode === "live_validation" ? "mistakes-chart" : "mistakes-valid"}>
             <h3>Mistakes</h3>
             <span>{mistakes}</span>
           </div>
+          <button type="button" className="side-btn" onClick={newGame}>New Game</button>
           <button type="button" className="side-btn" onClick={changeGameMode}>{gameMode === "live_validation" ? "Disable" : "Enable"} live validation</button>
         </div>
       </div>

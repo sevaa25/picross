@@ -94,7 +94,7 @@
 }
 
 .mistakes-chart > h3 {margin: 0; background-color: white; text-shadow: 1px 1px 1px rgb(182, 176, 176);}
-.mistakes-chart > span {background-color: white; font-size: 1.2rem; color: rgb(176, 172, 172);
+.mistakes-chart > span {background-color: white; font-size: 1.2rem; color: rgba(158, 8, 8, 0.834);
     text-shadow: 1px 1px 0px black;}
 
 .mistakes-chart{

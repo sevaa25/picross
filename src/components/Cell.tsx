@@ -10,7 +10,7 @@ interface CellProps{
 };
 
 function Cell({value, mouseDrag, mouseEnter, mouseUp, gameMode}:CellProps){
-    const divValue = (gameMode === "live_validation" && value === "marked") ? "X" : "";
+    const divValue = (gameMode === "live_validation" && (value === "wrongguess" || value === "mistake")) ? "X" : "";
     return(
         <div className={value + `Square`} onMouseDown={mouseDrag}
             onMouseEnter={mouseEnter} onMouseUp={mouseUp} >{divValue}</div>
