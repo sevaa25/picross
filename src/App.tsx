@@ -210,6 +210,7 @@ function App() {
   function newGame(){
     const newSolution = generateSolution();
     const [newRowHints, newColHints] = generateHints(newSolution);
+    console.log(newSolution);
     
     setSolution(newSolution);
     setRowHints(newRowHints);
@@ -309,7 +310,7 @@ function App() {
         if (isWon) {
           if (mistakes === 0) {
             setMatrix(matrix.map(row => 
-              row.map((val) => val === "filled" ? "completed" : "mistake")
+              row.map((val) => val === "filled" ? "completed" : "empty")
             ));
           } else {
             setMatrix(matrix.map(row => 
@@ -331,7 +332,7 @@ function App() {
     if (isWon) {
       if (mistakes === 0) {
         setMatrix(matrix.map(row => 
-          row.map((val) => val === "filled" ? "completed" : "mistake")
+          row.map((val) => val === "filled" ? "completed" : "empty")
         ));
       } else {
         setMatrix(matrix.map(row => 
@@ -371,6 +372,11 @@ function App() {
             <Grid squares={matrix} startDrag={handleMouseDrag} continueDrag={handleMouseEnter} 
               endDrag={handleMouseUp} mode={gameMode}/>
           </div>
+        </div>
+        <div className="rules-ref">
+          <span>Randomly generated <a href="https://en.wikipedia.org/wiki/Nonogram">picross puzles. </a>
+            Designed and written by <a href="https://github.com/sevaa25/">Usevalad Kurlovich. </a><br/>
+            Left click tiles to reveal, right click to mark as empty. Drag to select multiple at once</span>
         </div>
       </div>
     </div>  

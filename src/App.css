@@ -126,3 +126,12 @@
 }
 .locked-grid{pointer-events: none;}
 
+.rules-ref{
+    margin: 30px;
+    padding: 10px;
+    border: 1px dashed black;
+    font-size: 14px;
+    text-align: center;
+}
+
+span > a {text-decoration: none; color: rgb(32, 53, 184);}
