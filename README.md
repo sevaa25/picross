@@ -1,5 +1,11 @@
 # 🧩 MyPicross: React Picross/Nonogram App
 
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey?style=for-the-badge)
+![License: MIT](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+
 Like most Picross apps, this one has two game modes: Live Validation and No Live Validation. It can be played through the **[web version](https://sevaa25.github.io/picross/)** or installed and played locally, whichever option suits you more.
 
 ## Why these technologies?
@@ -83,6 +89,8 @@ Any modern browser (Chrome, Firefox, Edge, Safari) can run and play the game.
    npm run dev
 
 These steps apply to both Linux and Windows, since npm, git, and cd work everywhere.
+</details>
 
-
+# License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
