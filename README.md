@@ -1,73 +1,15 @@
-# React + TypeScript + Vite
+# 🧩 MyPicross: React Picross/Nonogram App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Like most Picross apps, this one has two game modes: Live Validation and No Live Validation. It can be played through the **[web version](https://sevaa25.github.io/picross/)** or installed and played locally, whichever option suits you more.
 
-Currently, two official plugins are available:
+## Game features:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+* **Intelligent Pseudorandom Solution Generator:** The engine procedurally generates a new puzzle layout every time a game begins. It takes a blank grid and populates it with varied clusters of randomly placed filled blocks and empty spaces, while making sure to stick to the mathematical rules of Picross.
+* **Hint Generator:** Once the solution is generated, it gets scanned from top to bottom and left to right to generate the exact numerical representation of filled blocks for each row and column, so the player can deduce the right solution.
+* **Clean Slate:** "New Game" button implemented. Click it, get an empty board, and receive a brand new puzzle to wrap your head around.
+* **Instant Mode Switching:** Changing game modes is as easy and instant as turning a light switch on and off. Toggling the mode automatically activates a fresh start with a new game.
+* **"Paint" Brush:** An efficient click-and-drag system that allows players to seamlessly fill or mark multiple squares at once in a single motion.
+* **Instant Mistake Detection:** Tracks the player's every move and compares it to the solution. If the player fills or marks the wrong square, the cell visually changes, and the mistake count increases. *(Available only in Live Validation Mode)*.
+* **Auto-Win Detection:** Compares the player's grid with the actual solution after every single move. If they match perfectly, the game immediately ends with either a win or a loss animation, depending on the mistake count. *(Available only in Live Validation Mode)*.
+* **Solve Puzzle:** Once you're done filling out your grid, click this button to find out whether you were right or wrong. Use it wisely—there are no second chances. Once clicked, the game is over and the grid is permanently locked. *(Available only in Standard Mode)*.
+* **Intelligent Cross-Out:** The smart hint system helps players track their progress by mathematically monitoring the coordinates of every required block on the board in real time, crossing out hints as you complete them.
