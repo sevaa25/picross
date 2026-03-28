@@ -11,8 +11,6 @@ Like most Picross apps, this one has two game modes: Live Validation and No Live
 ## Why these technologies?
 Since Picross involves сonstant data changes, mouse events, and screen updates, I used React. My game has a 10x10 grid, which is why it made perfect sense to rely on React's state management and Virtual DOM to ensure that when a player makes a move, only specific cells get updated without re-rendering all the others. 
 
-I needed to have custom-made types and be able to manage them without creating chaos. This made absolutely no sense using anything but TypeScript.
-
 Managing those 100 cells with multiple possible states (empty, filled, marked, wrong) in my custom type just screamed for TypeScript use. Building this with anything else would make absolutely no sense.
 
 ## Game features:
