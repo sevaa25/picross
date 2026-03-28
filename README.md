@@ -68,7 +68,7 @@ First, you'll need these:
 * **Node.js:** Version 18.0 or higher (required for Vite and the local server).
 * **Npm**: Comes automatically bundled with Node.js.
 * **Git:** Cloning the repository.
-Any modern browser (Chrome, Firefox, Edge, Safari) can run and play the game.
+* Any modern browser (Chrome, Firefox, Edge, Safari) can run and play the game.
 
 <details>
 <summary>Click here for build instructions</summary>
@@ -86,7 +86,7 @@ Any modern browser (Chrome, Firefox, Edge, Safari) can run and play the game.
    ```bash
    npm run dev
 
-These steps apply to both Linux and Windows, since npm, git, and cd work everywhere.
+These steps apply to Linux, macOS, and Windows, since npm, git, and cd work everywhere.
 </details>
 
 # License
